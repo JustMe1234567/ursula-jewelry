@@ -1,0 +1,2 @@
+import type {MetadataRoute} from 'next';
+export default function sitemap():MetadataRoute.Sitemap{const base='https://ursula-jewelry.sites.openai.com';const routes=['','shop','new','rings','earrings','necklaces','bracelets','collections','fine-jewelry','personalization','appointments','gift-cards','story','craftsmanship','materials','journal','care','repairs','shipping','faq','contact'];return routes.map((route,i)=>({url:`${base}/${route}`,changeFrequency:i<8?'weekly':'monthly',priority:route===''?1:i<8?.8:.6}))}

@@ -1,0 +1,4 @@
+import type {Metadata} from 'next';
+import Storefront from '../storefront';
+export async function generateMetadata({params}:{params:Promise<{slug:string[]}>}):Promise<Metadata>{const {slug}=await params;const name=slug.map(x=>x.replaceAll('-',' ')).join(' · ');const title=`${name.replace(/\b\w/g,c=>c.toUpperCase())} | Ursula Jewelry Philippines`;return {title,description:`Explore ${name} from Ursula: sculptural, gender-inclusive jewelry and thoughtful client services with nationwide delivery in the Philippines.`,openGraph:{title,description:'Jewelry shaped by instinct. Designed in Manila, delivered nationwide.',type:'website'},twitter:{card:'summary_large_image',title,description:'Sculptural jewelry, thoughtfully made.'}}}
+export default async function Route({params}:{params:Promise<{slug:string[]}>}){const {slug}=await params;return <Storefront view={slug[slug.length-1]}/>}
