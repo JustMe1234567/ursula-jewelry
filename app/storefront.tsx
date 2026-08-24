@@ -639,14 +639,27 @@ export default function Storefront({ view = "home" }: { view?: string }) {
     [filter, setFilter] = useState(routeFilter);
   useLayoutEffect(() => setFilter(routeFilter), [routeFilter]);
   const shown = useMemo(() => {
-    let x =
-      filter === "All"
-        ? products
-        : products.filter(
-            (p) =>
-              p.kind.toLowerCase() === filter.toLowerCase() ||
-              p.material.toLowerCase().includes(filter.toLowerCase()),
-          );
+    let x = products;
+    if (routeFilter !== "All") {
+      x = x.filter(
+        (product) => product.kind.toLowerCase() === routeFilter.toLowerCase(),
+      );
+    } else if (view === "new") {
+      x = x.filter((product) => product.badge === "New");
+    } else if (view === "fine-jewelry") {
+      x = x.filter(
+        (product) =>
+          product.material.toLowerCase().includes("lab-grown diamond") ||
+          product.material.toLowerCase().includes("14k gold"),
+      );
+    }
+    if (routeFilter === "All" && filter !== "All") {
+      x = x.filter(
+        (p) =>
+          p.kind.toLowerCase() === filter.toLowerCase() ||
+          p.material.toLowerCase().includes(filter.toLowerCase()),
+      );
+    }
     if (query)
       x = x.filter((p) =>
         (p.name + p.kind + p.material)
@@ -660,7 +673,7 @@ export default function Storefront({ view = "home" }: { view?: string }) {
           ? b.price - a.price
           : 0,
     );
-  }, [filter, query, sort]);
+  }, [filter, query, routeFilter, sort, view]);
   const add = (p: Product) => {
     setCart((x) => [...x, p]);
     setNotice(`${p.name} added to your bag`);
@@ -819,6 +832,7 @@ export default function Storefront({ view = "home" }: { view?: string }) {
           products={shown}
           filter={filter}
           setFilter={setFilter}
+          showFilters={["shop", "collections", "impression"].includes(view)}
           sort={sort}
           setSort={setSort}
           add={add}
@@ -1629,6 +1643,7 @@ function Catalog({
   products: ps,
   filter,
   setFilter,
+  showFilters,
   sort,
   setSort,
   add,
@@ -1639,6 +1654,7 @@ function Catalog({
   products: Product[];
   filter: string;
   setFilter: (x: string) => void;
+  showFilters: boolean;
   sort: string;
   setSort: (x: string) => void;
   add: (p: Product) => void;
@@ -1655,27 +1671,32 @@ function Catalog({
           and lab-grown diamonds. Delivered nationwide.
         </p>
       </section>
-      <div className="catalog-tools">
-        <div>
-          {[
-            "All",
-            "Rings",
-            "Earrings",
-            "Necklaces",
-            "Bracelets",
-            "Gold vermeil",
-            "Recycled silver",
-          ].map((x) => (
-            <button
-              className={filter === x ? "active" : ""}
-              key={x}
-              onClick={() => setFilter(x)}
-              aria-pressed={filter === x}
-            >
-              {x}
-            </button>
-          ))}
-        </div>
+      <div
+        className={`catalog-tools${showFilters ? "" : " sort-only"}`}
+        style={showFilters ? undefined : { justifyContent: "flex-end" }}
+      >
+        {showFilters && (
+          <div>
+            {[
+              "All",
+              "Rings",
+              "Earrings",
+              "Necklaces",
+              "Bracelets",
+              "Gold vermeil",
+              "Recycled silver",
+            ].map((x) => (
+              <button
+                className={filter === x ? "active" : ""}
+                key={x}
+                onClick={() => setFilter(x)}
+                aria-pressed={filter === x}
+              >
+                {x}
+              </button>
+            ))}
+          </div>
+        )}
         <label>
           Sort{" "}
           <select value={sort} onChange={(e) => setSort(e.target.value)}>
@@ -1698,12 +1719,14 @@ function Catalog({
       ) : (
         <section className="empty">
           <h2>No pieces match those filters.</h2>
-          <button
-            className="button button-primary"
-            onClick={() => setFilter("All")}
-          >
-            View all pieces
-          </button>
+          {showFilters && (
+            <button
+              className="button button-primary"
+              onClick={() => setFilter("All")}
+            >
+              View all pieces
+            </button>
+          )}
         </section>
       )}
       <Newsletter />
