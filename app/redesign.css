@@ -952,6 +952,38 @@ button {
 .story-copy .text-link {
   margin-top: 22px;
 }
+.editorial-cta {
+  position: relative;
+  gap: 0.42rem;
+  border-bottom: 0;
+  transform-origin: center;
+}
+.editorial-cta__label,
+.editorial-cta__arrow {
+  display: inline-block;
+  will-change: transform;
+}
+.editorial-cta__arrow {
+  font-size: 1rem;
+  line-height: 1;
+}
+.editorial-cta__line {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: currentColor;
+  transform-origin: left center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editorial-cta__label,
+  .editorial-cta__arrow,
+  .editorial-cta__line {
+    will-change: auto;
+  }
+}
 
 .assurance {
   grid-template-columns: repeat(4, 1fr);

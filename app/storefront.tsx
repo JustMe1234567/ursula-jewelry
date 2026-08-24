@@ -417,7 +417,7 @@ function useStoreMotion(view: string) {
     if (!scope || window.matchMedia("(prefers-reduced-motion: reduce)").matches)
       return;
     let observer: IntersectionObserver | undefined;
-    let removeListeners: Array<() => void> = [];
+    const removeListeners: Array<() => void> = [];
     const context = gsap.context(() => {
       const heroItems = scope.querySelectorAll(".hero-copy > *");
       if (heroItems.length)
@@ -464,7 +464,7 @@ function useStoreMotion(view: string) {
           ".button,.category,.journal-card,.product-card",
         ),
       );
-      removeListeners = hoverTargets.map((element) => {
+      removeListeners.push(...hoverTargets.map((element) => {
         const enter = () =>
           gsap.to(element, {
             y: -2,
@@ -506,7 +506,91 @@ function useStoreMotion(view: string) {
           element.removeEventListener("pointerup", up);
           element.removeEventListener("pointercancel", up);
         };
-      });
+      }));
+
+      const editorialCtas = Array.from(
+        scope.querySelectorAll<HTMLAnchorElement>(".editorial-cta"),
+      );
+      removeListeners.push(
+        ...editorialCtas.map((link) => {
+          const label = link.querySelector<HTMLElement>(
+            ".editorial-cta__label",
+          );
+          const arrow = link.querySelector<HTMLElement>(
+            ".editorial-cta__arrow",
+          );
+          const line = link.querySelector<HTMLElement>(
+            ".editorial-cta__line",
+          );
+          const enter = () => {
+            gsap.to(label, {
+              x: 3,
+              duration: 0.28,
+              ease: "power2.out",
+              overwrite: "auto",
+            });
+            gsap.to(arrow, {
+              x: 8,
+              duration: 0.36,
+              ease: "power3.out",
+              overwrite: "auto",
+            });
+            gsap
+              .timeline()
+              .to(line, {
+                scaleX: 0,
+                transformOrigin: "right center",
+                duration: 0.14,
+                ease: "power2.in",
+              })
+              .set(line, { transformOrigin: "left center" })
+              .to(line, {
+                scaleX: 1,
+                duration: 0.32,
+                ease: "power2.out",
+              });
+          };
+          const leave = () => {
+            gsap.to([label, arrow], {
+              x: 0,
+              duration: 0.24,
+              ease: "power2.out",
+              overwrite: "auto",
+            });
+          };
+          const down = () =>
+            gsap.to(link, {
+              scale: 0.98,
+              duration: 0.1,
+              ease: "power1.out",
+              overwrite: "auto",
+            });
+          const up = () =>
+            gsap.to(link, {
+              scale: 1,
+              duration: 0.18,
+              ease: "back.out(2)",
+              overwrite: "auto",
+            });
+
+          link.addEventListener("mouseenter", enter);
+          link.addEventListener("mouseleave", leave);
+          link.addEventListener("focus", enter);
+          link.addEventListener("blur", leave);
+          link.addEventListener("pointerdown", down);
+          link.addEventListener("pointerup", up);
+          link.addEventListener("pointercancel", up);
+          return () => {
+            link.removeEventListener("mouseenter", enter);
+            link.removeEventListener("mouseleave", leave);
+            link.removeEventListener("focus", enter);
+            link.removeEventListener("blur", leave);
+            link.removeEventListener("pointerdown", down);
+            link.removeEventListener("pointerup", up);
+            link.removeEventListener("pointercancel", up);
+          };
+        }),
+      );
     }, scope);
     return () => {
       observer?.disconnect();
@@ -1099,8 +1183,15 @@ function Home({
             A study in softness, pressure, and permanence. Each surface keeps
             the trace of the process that shaped it.
           </p>
-          <a className="text-link" href="/collections/impression">
-            Enter the collection →
+          <a
+            className="text-link editorial-cta"
+            href="/collections/impression"
+          >
+            <span className="editorial-cta__label">Enter the collection</span>
+            <span className="editorial-cta__arrow" aria-hidden="true">
+              →
+            </span>
+            <span className="editorial-cta__line" aria-hidden="true" />
           </a>
         </div>
       </section>
@@ -1117,8 +1208,12 @@ function Home({
             production—guided by specialist hands from first form to final
             polish.
           </p>
-          <a className="text-link" href="/craftsmanship">
-            Discover our craft →
+          <a className="text-link editorial-cta" href="/craftsmanship">
+            <span className="editorial-cta__label">Discover our craft</span>
+            <span className="editorial-cta__arrow" aria-hidden="true">
+              →
+            </span>
+            <span className="editorial-cta__line" aria-hidden="true" />
           </a>
         </div>
         <div
