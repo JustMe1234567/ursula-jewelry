@@ -173,6 +173,10 @@
   font-size: clamp(4rem, 7vw, 7.2rem);
 }
 
+#collection-grid .product-section {
+  padding-top: clamp(42px, 4vw, 64px);
+}
+
 .collection-carousel-track {
   position: absolute;
   inset: 0;
@@ -344,6 +348,10 @@
 
   .category-carousel .collection-carousel-copy h1 {
     font-size: 3.35rem;
+  }
+
+  #collection-grid .product-section {
+    padding-top: 34px;
   }
 
   .collection-carousel-copy h1 {
