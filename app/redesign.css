@@ -164,6 +164,12 @@ a,button{transition:color var(--motion-fast) ease,background-color var(--motion-
 .journal-card{border-color:#8f8880}
 .journal-image{position:relative}
 .journal-grid h3{font-family:var(--font-display);font-weight:500}
+.journal-grid{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}
+.journal-card,.journal-card:first-child{display:flex;flex-direction:column;height:100%;min-width:0}
+.journal-image,.journal-card:first-child .journal-image{width:100%;height:clamp(300px,29vw,420px);flex:0 0 auto}
+.journal-card-copy{flex:1}
+.journal-card-copy h3{min-height:2.05em}
+.journal-card-copy>p{min-height:4.8em}
 
 .newsletter{grid-template-columns:1.25fr .75fr;min-height:330px;padding:65px clamp(24px,7vw,120px);background:#d9cbbb}
 .newsletter h2{max-width:750px;font-size:clamp(3rem,4.6vw,4.8rem)}
@@ -188,6 +194,20 @@ a,button{transition:color var(--motion-fast) ease,background-color var(--motion-
 .feature-three{padding:80px clamp(20px,5vw,80px)}
 .feature-three div{padding:40px;border-color:var(--color-border)}
 .feature-three h2{font:500 2.2rem/1 var(--font-display)}
+.feature-accordion{display:grid;grid-template-columns:minmax(260px,.72fr) minmax(420px,1.28fr);gap:clamp(55px,9vw,150px);padding:clamp(80px,10vw,145px) clamp(24px,7vw,120px);background:var(--color-background)}
+.accordion-intro{align-self:start;position:sticky;top:130px}
+.accordion-intro h2{font:500 clamp(3.4rem,5.2vw,5.5rem)/.9 var(--font-display);letter-spacing:-.04em;margin:18px 0;max-width:520px}
+.accordion-list{border-top:1px solid #8f8880}
+.accordion-item{border-bottom:1px solid var(--color-border)}
+.accordion-trigger{width:100%;min-height:108px;display:grid;grid-template-columns:54px minmax(0,1fr) 32px;align-items:center;gap:18px;padding:20px 0;border:0;background:transparent;color:var(--color-primary);text-align:left}
+.accordion-trigger:hover{color:var(--color-accent)}
+.accordion-index{font-size:.6rem;letter-spacing:.15em;color:var(--color-accent)}
+.accordion-trigger>span:nth-child(2){font:500 clamp(1.7rem,2.5vw,2.6rem)/1 var(--font-display)}
+.accordion-mark{position:relative;width:24px;height:24px;justify-self:end;transform-origin:center}
+.accordion-mark:before,.accordion-mark:after{content:'';position:absolute;left:3px;right:3px;top:11px;height:1px;background:currentColor}
+.accordion-mark:after{transform:rotate(90deg)}
+.accordion-panel{height:0;opacity:0;overflow:hidden}
+.accordion-panel p{max-width:620px;margin:0;padding:0 50px 34px 72px;font-size:.9rem;line-height:1.75;color:var(--color-muted-foreground)}
 
 .checkout{max-width:1240px;padding-top:95px}
 .checkout h1{font-family:var(--font-display)}
@@ -232,8 +252,10 @@ footer a{min-height:30px;font-size:.67rem;color:#d6d3d1}
   .split-story,.reverse{grid-template-columns:1fr}.story-image{height:64dvh;min-height:430px}.story-copy{padding:65px 24px}.story-copy h2{font-size:4.4rem}.reverse .story-copy{order:2}
   .assurance{grid-template-columns:1fr 1fr;padding:0}.assurance div{min-height:230px;padding:38px 22px}
   .quote{grid-template-columns:1fr}.quote>div{min-height:440px;padding:65px 24px}.quote>div+div{border-left:0;border-top:1px solid rgba(255,255,255,.28);padding-left:24px}.quote blockquote{font-size:3.5rem}
+  .journal-grid{grid-template-columns:1fr 1fr}.journal-card,.journal-card:first-child{display:flex}.journal-image,.journal-card:first-child .journal-image{height:330px}.journal-card-copy h3,.journal-card-copy>p{min-height:0}
   .newsletter{grid-template-columns:1fr;gap:35px;padding:55px 22px}.newsletter h2{font-size:3.25rem}.newsletter form{grid-template-columns:1fr}.newsletter button{height:48px}
   .catalog-tools{top:64px}.editorial-hero{grid-template-columns:1fr}.editorial-hero>div:first-child{padding:70px 24px}.editorial-hero h1{font-size:4.5rem}.editorial-image{height:60dvh}.feature-three{grid-template-columns:1fr;padding:30px 20px}.feature-three div{padding:35px 10px;border-left:0;border-top:1px solid var(--color-border)}
+  .feature-accordion{grid-template-columns:1fr;gap:45px;padding:70px 22px}.accordion-intro{position:static}.accordion-trigger{min-height:92px;grid-template-columns:40px minmax(0,1fr) 28px}.accordion-panel p{padding-left:58px;padding-right:34px}
   .checkout{grid-template-columns:1fr;padding:60px 20px}.form-grid{grid-template-columns:1fr}
   footer{grid-template-columns:1fr 1fr;padding:58px 24px}.footer-brand{grid-column:1/-1;grid-row:auto}.footer-bottom{display:grid;gap:10px}
 }
@@ -245,8 +267,10 @@ footer a{min-height:30px;font-size:.67rem;color:#d6d3d1}
   .categories{grid-template-columns:1fr}.category{height:74vw;min-height:280px}
   .product-grid{grid-template-columns:1fr}.product-section{padding-left:12px;padding-right:12px}.product-art{aspect-ratio:4/4.6}.product-info{min-height:130px}.wish{min-height:40px}
   .assurance{grid-template-columns:1fr}.assurance div{min-height:0;border-right:0;padding:38px 22px}
+  .journal-grid{grid-template-columns:1fr}.journal-image,.journal-card:first-child .journal-image{height:340px}
   .page-hero h1{font-size:4rem}.catalog-tools{overflow:auto}.catalog-tools>div{overflow:visible}
   .drawer{padding:66px 22px}
+  .feature-accordion{padding-left:18px;padding-right:18px}.accordion-intro h2{font-size:3.4rem}.accordion-trigger{grid-template-columns:34px minmax(0,1fr) 26px;gap:10px}.accordion-trigger>span:nth-child(2){font-size:1.75rem}.accordion-panel p{padding-left:44px;padding-right:10px;font-size:.86rem}
 }
 
 @media(prefers-reduced-motion:reduce){
