@@ -1742,7 +1742,7 @@ function Catalog({
                 sizes="100vw"
                 style={{
                   objectFit: "cover",
-                  objectPosition: slide.product.position,
+                  objectPosition: "center",
                 }}
               />
             </figure>
