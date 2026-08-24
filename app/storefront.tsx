@@ -1668,13 +1668,13 @@ function Catalog({
     (product) => product.kind.toLowerCase() === title.toLowerCase(),
   );
   const heroProducts = categoryProducts.length ? categoryProducts : ps;
-  const primaryHeroProduct = heroProducts[0] ?? products[0];
-  const secondaryHeroProduct =
-    heroProducts[1] ?? heroProducts[0] ?? products[1];
-  const collectionSlides = (heroProducts.length ? heroProducts : products).slice(
-    0,
-    4,
-  );
+  const heroSource = heroProducts.length ? heroProducts : products;
+  const collectionSlides = [
+    ...heroSource.map((product) => ({ product, image: product.image })),
+    ...heroSource.flatMap((product) =>
+      product.gallery.slice(1).map((image) => ({ product, image })),
+    ),
+  ].slice(0, 5);
   const [heroSlide, setHeroSlide] = useState(0);
   const heroTouchStart = useRef<number | null>(null);
 
@@ -1683,7 +1683,7 @@ function Catalog({
   }, [title, filter]);
 
   useEffect(() => {
-    if (!collectionHero || collectionSlides.length < 2) return;
+    if (collectionSlides.length < 2) return;
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -1693,7 +1693,7 @@ function Catalog({
       setHeroSlide((current) => (current + 1) % collectionSlides.length);
     }, 5600);
     return () => window.clearInterval(timer);
-  }, [collectionHero, collectionSlides.length]);
+  }, [collectionSlides.length]);
 
   const moveHero = (direction: number) => {
     setHeroSlide(
@@ -1705,117 +1705,83 @@ function Catalog({
 
   return (
     <main id="main">
-      {collectionHero ? (
-        <section
-          className="collection-carousel"
-          aria-roledescription="carousel"
-          aria-label={`${title} featured pieces`}
-          onTouchStart={(event) => {
-            heroTouchStart.current = event.touches[0].clientX;
-          }}
-          onTouchEnd={(event) => {
-            if (heroTouchStart.current === null) return;
-            const distance = event.changedTouches[0].clientX - heroTouchStart.current;
-            if (Math.abs(distance) > 48) moveHero(distance > 0 ? -1 : 1);
-            heroTouchStart.current = null;
-          }}
+      <section
+        className="collection-carousel"
+        aria-roledescription="carousel"
+        aria-label={`${title} featured pieces`}
+        onTouchStart={(event) => {
+          heroTouchStart.current = event.touches[0].clientX;
+        }}
+        onTouchEnd={(event) => {
+          if (heroTouchStart.current === null) return;
+          const distance =
+            event.changedTouches[0].clientX - heroTouchStart.current;
+          if (Math.abs(distance) > 48) moveHero(distance > 0 ? -1 : 1);
+          heroTouchStart.current = null;
+        }}
+      >
+        <div
+          className="collection-carousel-track"
+          style={{ transform: `translateX(-${heroSlide * 100}%)` }}
         >
-          <div
-            className="collection-carousel-track"
-            style={{ transform: `translateX(-${heroSlide * 100}%)` }}
-          >
-            {collectionSlides.map((product, index) => (
-              <figure
-                className="collection-carousel-slide"
-                key={product.name}
-                aria-hidden={heroSlide !== index}
-              >
-                <Image
-                  src={product.image}
-                  alt={heroSlide === index ? `${product.name}, ${product.material}` : ""}
-                  fill
-                  priority={index < 2}
-                  sizes="100vw"
-                  style={{
-                    objectFit: "cover",
-                    objectPosition: product.position,
-                  }}
-                />
-              </figure>
-            ))}
-          </div>
-          <div className="collection-carousel-shade" aria-hidden="true" />
-          <div className="collection-carousel-copy">
-            <p className="eyebrow">Jewelry shaped by instinct</p>
-            <h1>{title}</h1>
+          {collectionSlides.map((slide, index) => (
+            <figure
+              className="collection-carousel-slide"
+              key={`${slide.product.name}-${slide.image}`}
+              aria-hidden={heroSlide !== index}
+            >
+              <Image
+                src={slide.image}
+                alt={
+                  heroSlide === index
+                    ? `${slide.product.name}, ${slide.product.material}`
+                    : ""
+                }
+                fill
+                priority={index < 2}
+                sizes="100vw"
+                style={{
+                  objectFit: "cover",
+                  objectPosition: slide.product.position,
+                }}
+              />
+            </figure>
+          ))}
+        </div>
+        <div className="collection-carousel-shade" aria-hidden="true" />
+        <div className="collection-carousel-copy">
+          <p className="eyebrow">Jewelry shaped by instinct</p>
+          <h1>{title}</h1>
+          {collectionHero ? (
             <p>
               A study in softness, pressure, and permanence—sculptural forms
               made slowly in Manila.
             </p>
-            <a className="collection-carousel-link" href="#collection-grid">
-              Explore the collection <ArrowRight size={16} aria-hidden="true" />
-            </a>
-          </div>
-          <div className="collection-carousel-meta" aria-live="polite">
-            <span>{String(heroSlide + 1).padStart(2, "0")}</span>
-            <span className="collection-carousel-line" aria-hidden="true" />
-            <span>{String(collectionSlides.length).padStart(2, "0")}</span>
-            <span>{collectionSlides[heroSlide]?.name}</span>
-          </div>
-          <div className="collection-carousel-controls">
-            <button onClick={() => moveHero(-1)} aria-label="Previous featured piece">
-              <CaretLeft size={20} aria-hidden="true" />
-            </button>
-            <button onClick={() => moveHero(1)} aria-label="Next featured piece">
-              <CaretRight size={20} aria-hidden="true" />
-            </button>
-          </div>
-        </section>
-      ) : (
-      <section className="page-hero catalog-hero">
-        <figure className="catalog-hero-image catalog-hero-image-primary">
-          <Image
-            src={primaryHeroProduct.image}
-            alt={`${primaryHeroProduct.name} from the ${title} edit`}
-            fill
-            priority
-            sizes="(max-width: 820px) 50vw, 28vw"
-            style={{
-              objectFit: "cover",
-              objectPosition: primaryHeroProduct.position,
-            }}
-          />
-          <figcaption>{primaryHeroProduct.name}</figcaption>
-        </figure>
-
-        <div className="catalog-hero-copy">
-          <p className="eyebrow">Jewelry shaped by instinct</p>
-          <h1>{title}</h1>
-          <p>
-            Thoughtful forms in recycled silver, gold vermeil, solid gold,
-            pearls, and lab-grown diamonds. Delivered nationwide.
-          </p>
-          <span className="catalog-hero-count">
-            {String(ps.length).padStart(2, "0")} forms · The Ursula edit
-          </span>
+          ) : (
+            <p>
+              Discover the Ursula edit through considered details, hand-finished
+              surfaces, and forms designed to be worn instinctively.
+            </p>
+          )}
+          <a className="collection-carousel-link" href="#collection-grid">
+            Explore {title.toLowerCase()} <ArrowRight size={16} aria-hidden="true" />
+          </a>
         </div>
-
-        <figure className="catalog-hero-image catalog-hero-image-secondary">
-          <Image
-            src={secondaryHeroProduct.image}
-            alt={`${secondaryHeroProduct.name} from the ${title} edit`}
-            fill
-            priority
-            sizes="(max-width: 820px) 50vw, 22vw"
-            style={{
-              objectFit: "cover",
-              objectPosition: secondaryHeroProduct.position,
-            }}
-          />
-          <figcaption>{secondaryHeroProduct.material}</figcaption>
-        </figure>
+        <div className="collection-carousel-meta" aria-live="polite">
+          <span>{String(heroSlide + 1).padStart(2, "0")}</span>
+          <span className="collection-carousel-line" aria-hidden="true" />
+          <span>{String(collectionSlides.length).padStart(2, "0")}</span>
+          <span>{collectionSlides[heroSlide]?.product.name}</span>
+        </div>
+        <div className="collection-carousel-controls">
+          <button onClick={() => moveHero(-1)} aria-label="Previous featured image">
+            <CaretLeft size={20} aria-hidden="true" />
+          </button>
+          <button onClick={() => moveHero(1)} aria-label="Next featured image">
+            <CaretRight size={20} aria-hidden="true" />
+          </button>
+        </div>
       </section>
-      )}
       <div
         className={`catalog-tools${showFilters ? "" : " sort-only"}`}
         style={showFilters ? undefined : { justifyContent: "flex-end" }}
