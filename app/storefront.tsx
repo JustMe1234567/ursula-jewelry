@@ -766,11 +766,44 @@ export default function Storefront({ view = "home" }: { view?: string }) {
           <span>Menu</span>
         </button>
         <nav aria-label="Primary navigation">
-          <a href="/shop">Jewelry</a>
-          <a href="/new">New arrivals</a>
-          <a href="/collections">Collections</a>
-          <a href="/personalization">Bespoke</a>
-          <a href="/journal">Journal</a>
+          <a
+            href="/shop"
+            aria-current={
+              ["shop", "rings", "earrings", "necklaces", "bracelets", "fine-jewelry"].includes(view)
+                ? "page"
+                : undefined
+            }
+          >
+            Jewelry
+          </a>
+          <a href="/new" aria-current={view === "new" ? "page" : undefined}>
+            New arrivals
+          </a>
+          <a
+            href="/collections"
+            aria-current={
+              ["collections", "impression"].includes(view) ? "page" : undefined
+            }
+          >
+            Collections
+          </a>
+          <a
+            href="/personalization"
+            aria-current={view === "personalization" ? "page" : undefined}
+          >
+            Bespoke
+          </a>
+          <a
+            href="/journal"
+            aria-current={
+              view === "journal" ||
+              journalArticles.some((article) => article.slug === view)
+                ? "page"
+                : undefined
+            }
+          >
+            Journal
+          </a>
         </nav>
         <a className="wordmark" href="/" aria-label="Ursula home">
           URSULA<span>MANILA</span>
