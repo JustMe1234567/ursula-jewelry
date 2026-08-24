@@ -544,6 +544,13 @@ function AnnouncementBar() {
 
 export default function Storefront({ view = "home" }: { view?: string }) {
   const motionRoot = useStoreMotion(view);
+  const categoryFilter: Record<string, string> = {
+    rings: "Rings",
+    earrings: "Earrings",
+    necklaces: "Necklaces",
+    bracelets: "Bracelets",
+  };
+  const routeFilter = categoryFilter[view] || "All";
   const [cart, setCart] = useState<Product[]>([]),
     [wish, setWish] = useState<string[]>([]),
     [drawer, setDrawerState] = useState<"menu" | "search" | "cart" | null>(
@@ -629,7 +636,8 @@ export default function Storefront({ view = "home" }: { view?: string }) {
     };
   }, [drawer]);
   const [sort, setSort] = useState("featured"),
-    [filter, setFilter] = useState("All");
+    [filter, setFilter] = useState(routeFilter);
+  useLayoutEffect(() => setFilter(routeFilter), [routeFilter]);
   const shown = useMemo(() => {
     let x =
       filter === "All"
