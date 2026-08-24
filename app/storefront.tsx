@@ -631,14 +631,27 @@ export default function Storefront({ view = "home" }: { view?: string }) {
   const [sort, setSort] = useState("featured"),
     [filter, setFilter] = useState("All");
   const shown = useMemo(() => {
-    let x =
-      filter === "All"
-        ? products
-        : products.filter(
-            (p) =>
-              p.kind.toLowerCase() === filter.toLowerCase() ||
-              p.material.toLowerCase().includes(filter.toLowerCase()),
-          );
+    let x = products;
+    if (routeFilter !== "All") {
+      x = x.filter(
+        (product) => product.kind.toLowerCase() === routeFilter.toLowerCase(),
+      );
+    } else if (view === "new") {
+      x = x.filter((product) => product.badge === "New");
+    } else if (view === "fine-jewelry") {
+      x = x.filter(
+        (product) =>
+          product.material.toLowerCase().includes("lab-grown diamond") ||
+          product.material.toLowerCase().includes("14k gold"),
+      );
+    }
+    if (routeFilter === "All" && filter !== "All") {
+      x = x.filter(
+        (p) =>
+          p.kind.toLowerCase() === filter.toLowerCase() ||
+          p.material.toLowerCase().includes(filter.toLowerCase()),
+      );
+    }
     if (query)
       x = x.filter((p) =>
         (p.name + p.kind + p.material)
@@ -652,7 +665,7 @@ export default function Storefront({ view = "home" }: { view?: string }) {
           ? b.price - a.price
           : 0,
     );
-  }, [filter, query, sort]);
+  }, [filter, query, routeFilter, sort, view]);
   const add = (p: Product) => {
     setCart((x) => [...x, p]);
     setNotice(`${p.name} added to your bag`);
@@ -811,6 +824,7 @@ export default function Storefront({ view = "home" }: { view?: string }) {
           products={shown}
           filter={filter}
           setFilter={setFilter}
+          showFilters={["shop", "collections", "impression"].includes(view)}
           sort={sort}
           setSort={setSort}
           add={add}
@@ -1621,6 +1635,7 @@ function Catalog({
   products: ps,
   filter,
   setFilter,
+  showFilters,
   sort,
   setSort,
   add,
@@ -1631,43 +1646,92 @@ function Catalog({
   products: Product[];
   filter: string;
   setFilter: (x: string) => void;
+  showFilters: boolean;
   sort: string;
   setSort: (x: string) => void;
   add: (p: Product) => void;
   wish: string[];
   toggleWish: (p: Product) => void;
 }) {
+  const categoryProducts = products.filter(
+    (product) => product.kind.toLowerCase() === title.toLowerCase(),
+  );
+  const heroProducts = categoryProducts.length ? categoryProducts : ps;
+  const primaryHeroProduct = heroProducts[0] ?? products[0];
+  const secondaryHeroProduct =
+    heroProducts[1] ?? heroProducts[0] ?? products[1];
+
   return (
     <main id="main">
-      <section className="page-hero">
-        <p className="eyebrow">Jewelry shaped by instinct</p>
-        <h1>{title}</h1>
-        <p>
-          Thoughtful forms in recycled silver, gold vermeil, solid gold, pearls,
-          and lab-grown diamonds. Delivered nationwide.
-        </p>
-      </section>
-      <div className="catalog-tools">
-        <div>
-          {[
-            "All",
-            "Rings",
-            "Earrings",
-            "Necklaces",
-            "Bracelets",
-            "Gold vermeil",
-            "Recycled silver",
-          ].map((x) => (
-            <button
-              className={filter === x ? "active" : ""}
-              key={x}
-              onClick={() => setFilter(x)}
-              aria-pressed={filter === x}
-            >
-              {x}
-            </button>
-          ))}
+      <section className="page-hero catalog-hero">
+        <figure className="catalog-hero-image catalog-hero-image-primary">
+          <Image
+            src={primaryHeroProduct.image}
+            alt={`${primaryHeroProduct.name} from the ${title} edit`}
+            fill
+            priority
+            sizes="(max-width: 820px) 50vw, 28vw"
+            style={{
+              objectFit: "cover",
+              objectPosition: primaryHeroProduct.position,
+            }}
+          />
+          <figcaption>{primaryHeroProduct.name}</figcaption>
+        </figure>
+
+        <div className="catalog-hero-copy">
+          <p className="eyebrow">Jewelry shaped by instinct</p>
+          <h1>{title}</h1>
+          <p>
+            Thoughtful forms in recycled silver, gold vermeil, solid gold,
+            pearls, and lab-grown diamonds. Delivered nationwide.
+          </p>
+          <span className="catalog-hero-count">
+            {String(ps.length).padStart(2, "0")} forms · The Ursula edit
+          </span>
         </div>
+
+        <figure className="catalog-hero-image catalog-hero-image-secondary">
+          <Image
+            src={secondaryHeroProduct.image}
+            alt={`${secondaryHeroProduct.name} from the ${title} edit`}
+            fill
+            priority
+            sizes="(max-width: 820px) 50vw, 22vw"
+            style={{
+              objectFit: "cover",
+              objectPosition: secondaryHeroProduct.position,
+            }}
+          />
+          <figcaption>{secondaryHeroProduct.material}</figcaption>
+        </figure>
+      </section>
+      <div
+        className={`catalog-tools${showFilters ? "" : " sort-only"}`}
+        style={showFilters ? undefined : { justifyContent: "flex-end" }}
+      >
+        {showFilters && (
+          <div>
+            {[
+              "All",
+              "Rings",
+              "Earrings",
+              "Necklaces",
+              "Bracelets",
+              "Gold vermeil",
+              "Recycled silver",
+            ].map((x) => (
+              <button
+                className={filter === x ? "active" : ""}
+                key={x}
+                onClick={() => setFilter(x)}
+                aria-pressed={filter === x}
+              >
+                {x}
+              </button>
+            ))}
+          </div>
+        )}
         <label>
           Sort{" "}
           <select value={sort} onChange={(e) => setSort(e.target.value)}>
@@ -1690,12 +1754,14 @@ function Catalog({
       ) : (
         <section className="empty">
           <h2>No pieces match those filters.</h2>
-          <button
-            className="button button-primary"
-            onClick={() => setFilter("All")}
-          >
-            View all pieces
-          </button>
+          {showFilters && (
+            <button
+              className="button button-primary"
+              onClick={() => setFilter("All")}
+            >
+              View all pieces
+            </button>
+          )}
         </section>
       )}
       <Newsletter />
