@@ -68,7 +68,7 @@ function useStoreMotion(view:string){
   const context=gsap.context(()=>{
    const heroItems=scope.querySelectorAll('.hero-copy > *');
    if(heroItems.length)gsap.fromTo(heroItems,{opacity:0,y:14},{opacity:1,y:0,duration:.55,stagger:.07,ease:'power2.out',clearProps:'transform,opacity'});
-   const revealTargets=Array.from(scope.querySelectorAll<HTMLElement>('.section-heading,.home-intro,.split-story,.assurance,.quote > div,.journal-heading,.journal-card,.product-card,.category,.feature-accordion,.newsletter'));
+   const revealTargets=Array.from(scope.querySelectorAll<HTMLElement>('.section-heading,.home-intro > *,.journal-heading > *,.journal-card,.product-card,.category,.feature-accordion,.newsletter > *'));
    observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(!entry.isIntersecting)return;const element=entry.target as HTMLElement;gsap.fromTo(element,{opacity:0,y:14},{opacity:1,y:0,duration:.4,ease:'power1.out',clearProps:'transform,opacity'});observer?.unobserve(element)}),{threshold:.08,rootMargin:'0px 0px -8% 0px'});
    revealTargets.forEach(element=>observer?.observe(element));
    const hoverTargets=Array.from(scope.querySelectorAll<HTMLElement>('.button,.category,.journal-card,.product-card'));
