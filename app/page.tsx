@@ -1,2 +1,3 @@
 import Storefront from './storefront';
-export default function Home(){return <Storefront view="home"/>}
+import {SITE_DESCRIPTION,SITE_NAME,SITE_URL} from './site';
+export default function Home(){const data={'@context':'https://schema.org','@graph':[{'@type':'OnlineStore','@id':SITE_URL+'/#store',name:SITE_NAME,url:SITE_URL+'/',description:SITE_DESCRIPTION,email:'hello@ursulajewelry.com',areaServed:{'@type':'Country',name:'Philippines'},priceRange:'₱₱₱',currenciesAccepted:'PHP',paymentAccepted:['GCash','Maya','Visa','Mastercard'],slogan:'Jewelry shaped by instinct.'},{'@type':'WebSite','@id':SITE_URL+'/#website',url:SITE_URL+'/',name:SITE_NAME,inLanguage:'en-PH',publisher:{'@id':SITE_URL+'/#store'}}]};return <><Storefront view="home"/><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(data)}}/></>}
