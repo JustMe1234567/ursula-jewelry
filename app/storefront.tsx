@@ -1,5 +1,6 @@
 "use client";
 import {
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -822,6 +823,7 @@ export default function Storefront({ view = "home" }: { view?: string }) {
         <Catalog
           title={routeTitle[view] || "The Impression Collection"}
           products={shown}
+          collectionHero={["collections", "impression"].includes(view)}
           filter={filter}
           setFilter={setFilter}
           showFilters={["shop", "collections", "impression"].includes(view)}
@@ -1633,6 +1635,7 @@ function ProductSection({
 function Catalog({
   title,
   products: ps,
+  collectionHero,
   filter,
   setFilter,
   showFilters,
@@ -1644,6 +1647,7 @@ function Catalog({
 }: {
   title: string;
   products: Product[];
+  collectionHero: boolean;
   filter: string;
   setFilter: (x: string) => void;
   showFilters: boolean;
@@ -1660,9 +1664,107 @@ function Catalog({
   const primaryHeroProduct = heroProducts[0] ?? products[0];
   const secondaryHeroProduct =
     heroProducts[1] ?? heroProducts[0] ?? products[1];
+  const collectionSlides = (heroProducts.length ? heroProducts : products).slice(
+    0,
+    4,
+  );
+  const [heroSlide, setHeroSlide] = useState(0);
+  const heroTouchStart = useRef<number | null>(null);
+
+  useEffect(() => {
+    setHeroSlide(0);
+  }, [title, filter]);
+
+  useEffect(() => {
+    if (!collectionHero || collectionSlides.length < 2) return;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (prefersReducedMotion) return;
+
+    const timer = window.setInterval(() => {
+      setHeroSlide((current) => (current + 1) % collectionSlides.length);
+    }, 5600);
+    return () => window.clearInterval(timer);
+  }, [collectionHero, collectionSlides.length]);
+
+  const moveHero = (direction: number) => {
+    setHeroSlide(
+      (current) =>
+        (current + direction + collectionSlides.length) %
+        collectionSlides.length,
+    );
+  };
 
   return (
     <main id="main">
+      {collectionHero ? (
+        <section
+          className="collection-carousel"
+          aria-roledescription="carousel"
+          aria-label={`${title} featured pieces`}
+          onTouchStart={(event) => {
+            heroTouchStart.current = event.touches[0].clientX;
+          }}
+          onTouchEnd={(event) => {
+            if (heroTouchStart.current === null) return;
+            const distance = event.changedTouches[0].clientX - heroTouchStart.current;
+            if (Math.abs(distance) > 48) moveHero(distance > 0 ? -1 : 1);
+            heroTouchStart.current = null;
+          }}
+        >
+          <div
+            className="collection-carousel-track"
+            style={{ transform: `translateX(-${heroSlide * 100}%)` }}
+          >
+            {collectionSlides.map((product, index) => (
+              <figure
+                className="collection-carousel-slide"
+                key={product.name}
+                aria-hidden={heroSlide !== index}
+              >
+                <Image
+                  src={product.image}
+                  alt={heroSlide === index ? `${product.name}, ${product.material}` : ""}
+                  fill
+                  priority={index < 2}
+                  sizes="100vw"
+                  style={{
+                    objectFit: "cover",
+                    objectPosition: product.position,
+                  }}
+                />
+              </figure>
+            ))}
+          </div>
+          <div className="collection-carousel-shade" aria-hidden="true" />
+          <div className="collection-carousel-copy">
+            <p className="eyebrow">Jewelry shaped by instinct</p>
+            <h1>{title}</h1>
+            <p>
+              A study in softness, pressure, and permanence—sculptural forms
+              made slowly in Manila.
+            </p>
+            <a className="collection-carousel-link" href="#collection-grid">
+              Explore the collection <ArrowRight size={16} aria-hidden="true" />
+            </a>
+          </div>
+          <div className="collection-carousel-meta" aria-live="polite">
+            <span>{String(heroSlide + 1).padStart(2, "0")}</span>
+            <span className="collection-carousel-line" aria-hidden="true" />
+            <span>{String(collectionSlides.length).padStart(2, "0")}</span>
+            <span>{collectionSlides[heroSlide]?.name}</span>
+          </div>
+          <div className="collection-carousel-controls">
+            <button onClick={() => moveHero(-1)} aria-label="Previous featured piece">
+              <CaretLeft size={20} aria-hidden="true" />
+            </button>
+            <button onClick={() => moveHero(1)} aria-label="Next featured piece">
+              <CaretRight size={20} aria-hidden="true" />
+            </button>
+          </div>
+        </section>
+      ) : (
       <section className="page-hero catalog-hero">
         <figure className="catalog-hero-image catalog-hero-image-primary">
           <Image
@@ -1706,6 +1808,7 @@ function Catalog({
           <figcaption>{secondaryHeroProduct.material}</figcaption>
         </figure>
       </section>
+      )}
       <div
         className={`catalog-tools${showFilters ? "" : " sort-only"}`}
         style={showFilters ? undefined : { justifyContent: "flex-end" }}
@@ -1742,6 +1845,7 @@ function Catalog({
         </label>
       </div>
       {ps.length ? (
+        <div id="collection-grid">
         <ProductSection
           key={`${filter}-${sort}`}
           title={`${ps.length} considered forms`}
@@ -1751,6 +1855,7 @@ function Catalog({
           wish={wish}
           toggleWish={toggleWish}
         />
+        </div>
       ) : (
         <section className="empty">
           <h2>No pieces match those filters.</h2>
