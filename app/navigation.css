@@ -1,0 +1,59 @@
+.site-header nav {
+  gap: clamp(2px, 0.45vw, 9px);
+}
+
+.site-header nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 2px;
+  color: var(--color-heading);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  transition:
+    color 220ms ease,
+    background-color 220ms ease,
+    transform 220ms ease;
+}
+
+.site-header nav a:hover,
+.site-header nav a:focus-visible,
+.site-header nav a[aria-current="page"] {
+  color: var(--color-heading-accent);
+  background: rgba(124, 74, 3, 0.07);
+  transform: translateY(-1px);
+}
+
+.header-actions a,
+.header-actions button {
+  color: var(--color-heading);
+  font-size: 0.74rem;
+}
+
+.header-actions a:hover,
+.header-actions button:hover {
+  color: var(--color-heading-accent);
+}
+
+.site-header nav a::after {
+  left: 10px;
+  right: 10px;
+  bottom: 5px;
+  height: 2px;
+  background: var(--color-heading-accent);
+}
+
+.site-header nav a:hover::after,
+.site-header nav a:focus-visible::after,
+.site-header nav a[aria-current="page"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header nav a {
+    transform: none;
+  }
+}
