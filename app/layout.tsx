@@ -1,5 +1,6 @@
 import type {Metadata,Viewport} from 'next';
 import './globals.css';
+import './redesign.css';
 const description='Shop gender-inclusive rings, earrings, necklaces and bracelets in recycled silver, gold vermeil and 14k gold. Secure checkout and nationwide Philippine delivery.';
 export const viewport:Viewport={width:'device-width',initialScale:1,themeColor:'#151719'};
 export const metadata:Metadata={metadataBase:new URL('https://ursula-jewelry.sites.openai.com'),title:{default:'Ursula Jewelry Philippines | Sculptural Demi-Fine Jewelry',template:'%s | Ursula Philippines'},description,keywords:['jewelry Philippines','demi-fine jewelry Philippines','rings Philippines','gold vermeil jewelry','recycled silver jewelry','gender inclusive jewelry','Manila jewelry'],alternates:{canonical:'/'},openGraph:{type:'website',locale:'en_PH',siteName:'Ursula Jewelry',title:'Ursula Jewelry Philippines | Jewelry Shaped by Instinct',description},twitter:{card:'summary_large_image',title:'Ursula Jewelry Philippines',description},robots:{index:true,follow:true},icons:{icon:'/favicon.svg'}};
