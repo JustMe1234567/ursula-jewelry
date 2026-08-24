@@ -631,11 +631,18 @@ export default function Storefront({ view = "home" }: { view?: string }) {
   }, [drawer]);
   const [sort, setSort] = useState("featured"),
     [filter, setFilter] = useState("All");
+  const categoryForView: Record<string, Product["kind"]> = {
+    rings: "Rings",
+    earrings: "Earrings",
+    necklaces: "Necklaces",
+    bracelets: "Bracelets",
+  };
   const shown = useMemo(() => {
     let x = products;
-    if (routeFilter !== "All") {
+    const category = categoryForView[view];
+    if (category) {
       x = x.filter(
-        (product) => product.kind.toLowerCase() === routeFilter.toLowerCase(),
+        (product) => product.kind === category,
       );
     } else if (view === "new") {
       x = x.filter((product) => product.badge === "New");
@@ -646,7 +653,7 @@ export default function Storefront({ view = "home" }: { view?: string }) {
           product.material.toLowerCase().includes("14k gold"),
       );
     }
-    if (routeFilter === "All" && filter !== "All") {
+    if (view === "collections" && filter !== "All") {
       x = x.filter(
         (p) =>
           p.kind.toLowerCase() === filter.toLowerCase() ||
@@ -666,7 +673,7 @@ export default function Storefront({ view = "home" }: { view?: string }) {
           ? b.price - a.price
           : 0,
     );
-  }, [filter, query, routeFilter, sort, view]);
+  }, [filter, query, sort, view]);
   const add = (p: Product) => {
     setCart((x) => [...x, p]);
     setNotice(`${p.name} added to your bag`);
@@ -826,7 +833,7 @@ export default function Storefront({ view = "home" }: { view?: string }) {
           collectionHero={["collections", "impression"].includes(view)}
           filter={filter}
           setFilter={setFilter}
-          showFilters={["shop", "collections", "impression"].includes(view)}
+          showFilters={view === "collections"}
           sort={sort}
           setSort={setSort}
           add={add}
