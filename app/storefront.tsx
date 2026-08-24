@@ -1706,7 +1706,7 @@ function Catalog({
   return (
     <main id="main">
       <section
-        className="collection-carousel"
+        className={`collection-carousel${collectionHero ? "" : " category-carousel"}`}
         aria-roledescription="carousel"
         aria-label={`${title} featured pieces`}
         onTouchStart={(event) => {

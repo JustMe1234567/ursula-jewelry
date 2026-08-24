@@ -165,6 +165,14 @@
   touch-action: pan-y;
 }
 
+.category-carousel {
+  min-height: clamp(500px, 60vh, 620px);
+}
+
+.category-carousel .collection-carousel-copy h1 {
+  font-size: clamp(4rem, 7vw, 7.2rem);
+}
+
 .collection-carousel-track {
   position: absolute;
   inset: 0;
@@ -287,6 +295,10 @@
     min-height: 720px;
   }
 
+  .category-carousel {
+    min-height: 590px;
+  }
+
   .collection-carousel-copy {
     top: auto;
     right: 24px;
@@ -320,6 +332,18 @@
 @media (max-width: 520px) {
   .collection-carousel {
     min-height: 680px;
+  }
+
+  .category-carousel {
+    min-height: 550px;
+  }
+
+  .category-carousel .collection-carousel-copy {
+    bottom: 118px;
+  }
+
+  .category-carousel .collection-carousel-copy h1 {
+    font-size: 3.35rem;
   }
 
   .collection-carousel-copy h1 {
