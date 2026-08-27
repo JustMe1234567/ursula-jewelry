@@ -835,7 +835,7 @@ export default function Storefront({ view = "home" }: { view?: string }) {
     "impression",
   ].includes(view);
   return (
-    <div id="top" ref={motionRoot}>
+    <div id="top" className={`site-root view-${view}`} ref={motionRoot}>
       <a className="skip" href="#main">
         Skip to content
       </a>

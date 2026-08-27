@@ -1877,6 +1877,296 @@ footer a {
   }
 }
 
+/* Mobile commerce pass: keep primary actions early and discovery sections compact. */
+@media (max-width: 640px) {
+  .site-header {
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 0 10px 0 12px;
+  }
+
+  .menu-button {
+    justify-content: center;
+    min-width: 44px;
+  }
+
+  .menu-button span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .wordmark {
+    min-height: 44px;
+    justify-self: center;
+  }
+
+  .header-actions {
+    gap: 0;
+  }
+
+  .header-actions .saved-action,
+  .header-actions .bag-action {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .view-home .hero {
+    grid-template-areas: "copy" "image";
+  }
+
+  .view-home .hero-copy {
+    padding: 38px 18px 44px;
+  }
+
+  .view-home .hero h1 {
+    max-width: 8ch;
+    margin: 16px 0 22px;
+    font-size: clamp(3.25rem, 15vw, 4rem);
+    line-height: 0.84;
+  }
+
+  .view-home .hero-copy > p:not(.eyebrow) {
+    font-size: 1rem;
+    line-height: 1.62;
+  }
+
+  .view-home .hero-buttons {
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .view-home .hero-image {
+    min-height: 54dvh;
+  }
+
+  .view-home .hero-caption {
+    position: relative;
+    z-index: 2;
+    grid-area: image;
+    align-self: end;
+    inset: auto;
+    padding: 0 18px 16px;
+  }
+
+  .trust-strip span {
+    min-height: 96px;
+    padding: 16px 14px;
+  }
+
+  .home-intro {
+    gap: 18px;
+    padding: 56px 18px;
+  }
+
+  .home-intro > p:nth-child(2) {
+    max-width: 12ch;
+    font-size: clamp(2.55rem, 12vw, 3rem);
+    line-height: 0.96;
+  }
+
+  .view-home .categories,
+  .view-home .product-grid,
+  .view-home .journal-grid {
+    overscroll-behavior-inline: contain;
+    overflow-x: auto;
+    scrollbar-width: none;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .view-home .categories::-webkit-scrollbar,
+  .view-home .product-grid::-webkit-scrollbar,
+  .view-home .journal-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .view-home .categories {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: min(78vw, 320px);
+    gap: 12px;
+    padding: 0 16px 12px;
+    scroll-padding-left: 16px;
+    background: transparent;
+  }
+
+  .view-home .category {
+    height: min(112vw, 430px);
+    min-height: 330px;
+    scroll-snap-align: start;
+  }
+
+  .view-home .category span {
+    font-size: 1.85rem;
+  }
+
+  .view-home .product-section {
+    padding: 58px 0 66px;
+  }
+
+  .view-home .section-heading {
+    margin: 0 16px 28px;
+    padding-bottom: 16px;
+  }
+
+  .view-home .section-heading h2 {
+    font-size: 3rem;
+  }
+
+  .view-home .product-grid {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: min(82vw, 350px);
+    gap: 12px;
+    padding: 0 16px 10px;
+    scroll-padding-left: 16px;
+  }
+
+  .view-home .product-card {
+    scroll-snap-align: start;
+  }
+
+  .view-home .product-info {
+    min-height: 190px;
+    padding: 18px 16px 20px;
+  }
+
+  .product-name {
+    min-height: 44px !important;
+  }
+
+  .wish {
+    min-height: 44px;
+  }
+
+  .view-home .story-image {
+    height: 52dvh;
+    min-height: 360px;
+  }
+
+  .view-home .story-copy {
+    padding: 48px 18px 54px;
+  }
+
+  .view-home .story-copy h2 {
+    font-size: clamp(3.15rem, 15vw, 3.75rem);
+    line-height: 0.9;
+  }
+
+  .view-home .assurance {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .view-home .assurance div {
+    min-height: 176px;
+    padding: 26px 16px;
+    border-right: 1px solid var(--color-border);
+  }
+
+  .view-home .assurance div:nth-child(even) {
+    border-right: 0;
+  }
+
+  .view-home .assurance span {
+    margin-bottom: 18px;
+  }
+
+  .view-home .assurance b {
+    font-size: 1.35rem;
+  }
+
+  .view-home .quote > div {
+    min-height: 360px;
+    padding: 48px 18px;
+  }
+
+  .view-home .quote > div + div {
+    padding-left: 18px;
+  }
+
+  .view-home .quote blockquote {
+    font-size: clamp(2.75rem, 13vw, 3.25rem);
+  }
+
+  .view-home .quote h2 {
+    font-size: clamp(2.65rem, 12vw, 3.15rem);
+  }
+
+  .view-home .journal {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .view-home .journal-heading {
+    margin-right: 18px;
+    margin-left: 18px;
+  }
+
+  .view-home .journal-grid {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: min(84vw, 360px);
+    align-items: stretch;
+    gap: 12px;
+    padding: 0 18px 12px;
+    scroll-padding-left: 18px;
+  }
+
+  .view-home .journal-card,
+  .view-home .journal-card:first-child {
+    scroll-snap-align: start;
+  }
+
+  .view-home .journal-image,
+  .view-home .journal-card:first-child .journal-image {
+    height: 320px;
+  }
+
+  .newsletter {
+    gap: 26px;
+    padding: 48px 18px;
+  }
+
+  .newsletter h2 {
+    font-size: clamp(2.75rem, 12vw, 3.15rem);
+  }
+
+  .product-modal-backdrop {
+    align-items: end;
+    padding: 0;
+  }
+
+  .product-modal {
+    width: 100%;
+    max-height: 94dvh;
+    border-radius: 14px 14px 0 0;
+  }
+
+  .product-modal-copy {
+    padding: 42px 20px max(32px, env(safe-area-inset-bottom));
+  }
+
+  .product-modal-copy h2,
+  .editorial-hero h1,
+  .page-hero h1 {
+    font-size: clamp(3.2rem, 15vw, 3.85rem);
+  }
+
+  footer {
+    gap: 30px 18px;
+    padding: 50px 20px 24px;
+  }
+
+  footer a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+
 @media (max-width: 520px) {
   .wordmark {
     letter-spacing: 0.27em;
@@ -2271,5 +2561,35 @@ footer a {
   }
   .announcement-item:first-child:before {
     display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .view-home .categories {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: min(78vw, 320px);
+  }
+
+  .view-home .product-grid {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: min(82vw, 350px);
+  }
+
+  .view-home .assurance {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .view-home .journal-grid {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: min(84vw, 360px);
+  }
+
+  .product-modal-copy h2,
+  .editorial-hero h1,
+  .page-hero h1 {
+    font-size: clamp(3.2rem, 15vw, 3.85rem);
   }
 }
